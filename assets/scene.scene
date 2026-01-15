@@ -863,8 +863,8 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": 0,
-      "z": 0
+      "y": 0.1,
+      "z": -22.468
     },
     "_lrot": {
       "__type__": "cc.Quat",
@@ -875,9 +875,9 @@
     },
     "_lscale": {
       "__type__": "cc.Vec3",
-      "x": 1,
+      "x": 1.2,
       "y": 1,
-      "z": 1
+      "z": 2.5
     },
     "_mobility": 0,
     "_layer": 1073741824,
@@ -900,7 +900,10 @@
     "_enabled": true,
     "__prefab": null,
     "_materials": [
-      null
+      {
+        "__uuid__": "d7c903f3-af95-4c43-a7c9-722ff3fec635",
+        "__expectedType__": "cc.Material"
+      }
     ],
     "_visFlags": 0,
     "bakeSettings": {
