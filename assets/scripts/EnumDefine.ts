@@ -103,4 +103,6 @@ export enum ColliderType { // 碰撞体类型
     Ground = "Ground", // 地面
     Obstacle = "Obstacle", // 障碍物
     Bullet = "Bullet", // 子弹
+    Mount = "Mount", // 骑
+    Dismount = "Dismount", // 下马
 }
