@@ -1,4 +1,5 @@
 import { _decorator, Component, EventTouch, Input, Node, UITransform, Vec3 } from 'cc';
+import { GameGlobal } from '../GameGlobal';
 const { ccclass, property } = _decorator;
 
 @ccclass('MainGame')
@@ -42,6 +43,7 @@ export class MainGame extends Component {
             pos_nodeSpace.divide(new Vec3(ratio, ratio, 1));
         }
         this.joyStick.getChildByName("Pole").setPosition(pos_nodeSpace);
+        GameGlobal.mainActor.move(pos_nodeSpace.normalize());
 
     }
 
@@ -49,6 +51,7 @@ export class MainGame extends Component {
 
         this.joyStick.active = false;
         this.joyStick.getChildByName("Pole").setPosition(Vec3.ZERO);
+        GameGlobal.mainActor.stopMove();
 
     }
 
