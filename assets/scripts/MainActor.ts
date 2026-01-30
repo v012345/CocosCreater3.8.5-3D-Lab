@@ -1,7 +1,8 @@
-import { _decorator, CharacterController, Component, instantiate, Node, Prefab, Quat, Vec3 } from 'cc';
+import { _decorator, CharacterController, Component, instantiate, Node, Prefab, Quat, SkeletalAnimation, Vec3 } from 'cc';
 import { Bag } from './tools/Bag';
 import { GameGlobal } from './GameGlobal';
-import { StateDefine } from './EnumDefine';
+import { AnimDefine, StateDefine } from './EnumDefine';
+import { ActorAnimation } from './Anim/ActorAnimation';
 const { ccclass, property } = _decorator;
 
 @ccclass('MainActor')
@@ -14,11 +15,21 @@ export class MainActor extends Component {
     characterController: CharacterController;
     moveDir: Vec3 = new Vec3(0, 0, 0);
     isMoving: boolean = false;
-    currState: StateDefine = StateDefine.Idle;
+    currAnim: AnimDefine = AnimDefine.Null;
+    currState: StateDefine = StateDefine.Null;
+    @property(Node)
+    animNode: Node;
+    anim: SkeletalAnimation | null = null;
+    animEvent: ActorAnimation | null = null;  // 动画事件处理
     start() {
         GameGlobal.mainActor = this;
         this.getCoinPile();
         this.characterController = this.node.getComponent(CharacterController);
+        this.anim = this.animNode?.getComponent(SkeletalAnimation);
+        if (this.anim) {
+            this.animEvent = this.animNode.getComponent(ActorAnimation);
+        }
+        this.changeActorState(StateDefine.Idle);
     }
 
     update(deltaTime: number) {
@@ -40,11 +51,12 @@ export class MainActor extends Component {
         }
     }
     private onIdleState(deltaTime: number) {
-
+        this.animPlay(AnimDefine.Idle);
     }
     private onMoveState(deltaTime: number) {
         this.performMovement(deltaTime);
         this.updateRotation();
+        this.animPlay(AnimDefine.Move);
 
     }
     private updateRotation() {
@@ -89,6 +101,14 @@ export class MainActor extends Component {
         const oldState = this.currState;
         this.currState = newState;
         this.enterState(newState, oldState);
+    }
+
+    animPlay(name: AnimDefine) {
+        if (this.currAnim === name) {
+            return;
+        }
+        this.currAnim = name;
+        this.anim?.crossFade(name);
     }
 
 

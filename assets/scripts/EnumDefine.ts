@@ -2,6 +2,7 @@
  * 角色状态
  */
 export enum StateDefine {
+    Null = "null",
     Idle = "idle",
     Attack = "attack",
     MoveAttack = "moveAttack",
@@ -15,6 +16,7 @@ export enum StateDefine {
 }
 /** 角色动画 */
 export enum AnimDefine {
+    Null = "null",
     /** 待机 */
     Idle = "idle",
     /** 移动 */
