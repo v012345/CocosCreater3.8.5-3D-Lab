@@ -1,13 +1,16 @@
-import { _decorator, CharacterController, Component, instantiate, Node, Prefab, Quat, SkeletalAnimation, Vec3 } from 'cc';
+import { _decorator, CharacterController, Collider, Component, instantiate, ITriggerEvent, Node, Prefab, Quat, SkeletalAnimation, tween, Vec3 } from 'cc';
 import { Bag } from './tools/Bag';
 import { GameGlobal } from './GameGlobal';
-import { AnimDefine, StateDefine } from './EnumDefine';
+import { AnimDefine, ColliderTypeEnum, StateDefine } from './EnumDefine';
 import { ActorAnimation } from './Anim/ActorAnimation';
+import { ColliderType } from './components/ColliderType';
+import { Sticker } from './prefabs/Sticker';
 const { ccclass, property } = _decorator;
 
 @ccclass('MainActor')
 export class MainActor extends Component {
-    /** 金币背包 */
+    @property(Collider)
+    collider: Collider;
     @property(Bag)
     bagCoin: Bag<Component>;
     @property(Prefab)
@@ -30,6 +33,46 @@ export class MainActor extends Component {
             this.animEvent = this.animNode.getComponent(ActorAnimation);
         }
         this.changeActorState(StateDefine.Idle);
+        this.collider.on('onTriggerEnter', this.onTriggerEnter, this);
+        this.collider.on('onTriggerStay', this.onTriggerStay, this);
+        this.collider.on('onTriggerExit', this.onTriggerExit, this);
+    }
+    onTriggerEnter(event: ITriggerEvent) {
+        let colliderType = event.otherCollider.node.getComponent(ColliderType);
+        if (!colliderType) {
+            return;
+        }
+        if (colliderType.colliderType == ColliderTypeEnum.Mount) {
+            this.onStartRideLion(event.otherCollider.node);
+        }
+        // console.log("触发碰撞", colliderType.colliderType);
+    }
+    private onStartRideLion(stickerNode?: Node) {
+        let sticker = stickerNode?.getComponent(Sticker);
+        sticker.startProgressBar(() => {
+            console.log("骑狮子成功");
+        }, 0.5);
+        // const sp = this.rideDiTie.getChildByPath("diTieLayer/info/fill").getComponent(Sprite);
+        // this.rideDiTieTween?.stop();
+        // this.rideDiTieTween = tween(sp)
+        //     .to(0.5, { fillRange: 1 })
+        //     .call(() => {
+        //         this.onRideLion();
+        //     })
+        //     .start();
+    }
+
+    onTriggerStay(event: ITriggerEvent) {
+        // console.log("持续碰撞", event);
+    }
+    onTriggerExit(event: ITriggerEvent) {
+        let colliderType = event.otherCollider.node.getComponent(ColliderType);
+        if (!colliderType) {
+            return;
+        }
+        if (colliderType.colliderType == ColliderTypeEnum.Mount) {
+            event.otherCollider.node.getComponent(Sticker).setProgressBar(0);
+        }
     }
 
     update(deltaTime: number) {

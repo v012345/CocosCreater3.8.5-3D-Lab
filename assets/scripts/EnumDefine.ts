@@ -95,7 +95,7 @@ export enum StickerType { // 贴纸类型
     CollectFeather = "CollectFeather", // 收集羽毛
 }
 
-export enum ColliderType { // 碰撞体类型
+export enum ColliderTypeEnum { // 碰撞体类型
     Null = "Null", // 无
     MainActor = "MainActor", // 主角
     Player = "Player", // 玩家
