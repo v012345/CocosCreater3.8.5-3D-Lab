@@ -1,4 +1,4 @@
-import { _decorator, Component, instantiate, Node, Prefab, Vec3 } from 'cc';
+import { _decorator, CharacterController, Component, instantiate, Node, Prefab, Vec3 } from 'cc';
 import { Bag } from './tools/Bag';
 import { GameGlobal } from './GameGlobal';
 import { StateDefine } from './EnumDefine';
@@ -11,12 +11,14 @@ export class MainActor extends Component {
     bagCoin: Bag<Component>;
     @property(Prefab)
     coinPrefab: Prefab;
+    characterController: CharacterController;
     moveDir: Vec3 = new Vec3(0, 0, 0);
     isMoving: boolean = false;
     currState: StateDefine = StateDefine.Idle;
     start() {
         GameGlobal.mainActor = this;
         this.getCoinPile();
+        this.characterController = this.node.getComponent(CharacterController);
     }
 
     update(deltaTime: number) {
@@ -47,18 +49,17 @@ export class MainActor extends Component {
     }
 
     private performMovement(deltaTime: number) {
-
-        // Vec3.multiplyScalar(this.dir, this.moveDir, this.speed * deltaTime);
-        // this.characterController.move(this.dir);
+        let speed = 5;
+        let dir = new Vec3();
+        Vec3.multiplyScalar(dir, this.moveDir, speed * deltaTime);
+        this.characterController.move(dir);
 
         // GameGlobal.cameraControl.cameraFollow();
     }
 
     move(dir: Vec3) {
-
-        this.moveDir = new Vec3(dir.x, dir.z, -dir.y);
+        this.moveDir = new Vec3(-dir.x, dir.z, dir.y);
         this.moveDir.normalize();
-        console.log("移动方向：", this.moveDir);
         this.isMoving = true;
     }
     stopMove() {
