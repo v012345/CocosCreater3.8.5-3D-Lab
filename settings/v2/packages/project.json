@@ -10,7 +10,16 @@
       {
         "index": 1,
         "name": "Sticker"
+      },
+      {
+        "index": 2,
+        "name": "MainActor"
       }
-    ]
+    ],
+    "collisionMatrix": {
+      "0": 1,
+      "1": 4,
+      "2": 2
+    }
   }
 }
