@@ -5,6 +5,7 @@ import { AnimDefine, ColliderTypeEnum, StateDefine } from './EnumDefine';
 import { ActorAnimation } from './Anim/ActorAnimation';
 import { ColliderType } from './components/ColliderType';
 import { Sticker } from './prefabs/Sticker';
+import { Utils } from './tools/Utils';
 const { ccclass, property } = _decorator;
 
 @ccclass('MainActor')
@@ -49,16 +50,41 @@ export class MainActor extends Component {
             return;
         }
         if (colliderType.colliderType == ColliderTypeEnum.Mount) {
-            this.onStartRideLion(event.otherCollider.node);
+            if (!this.isMounted) this.onStartRideLion(event.otherCollider.node);
         }
         // console.log("触发碰撞", colliderType.colliderType);
+    }
+    rideGriffin() {
+        this.isMounted = true;
+        let oWorldPos = this.griffinAnimNode.worldPosition.clone()
+        this.griffinAnimNode.setParent(this.node);
+        this.griffinAnimNode.worldPosition = oWorldPos;
     }
     private onStartRideLion(stickerNode?: Node) {
         let sticker = stickerNode?.getComponent(Sticker);
         sticker.startProgressBar(() => {
-            this.isMounted = true;
-            this.riderAnim.crossFade(AnimDefine.RideIdle);
-            this.griffinAnim.crossFade(AnimDefine.Idle);
+
+
+
+            const wro = this.griffinAnimNode.eulerAngles.clone();
+            let startPos = this.node.worldPosition.clone();
+            let targetPos = this.griffinAnimNode.worldPosition.clone().add(new Vec3(0, 1, 0));
+            let offsetPos = new Vec3(0, 5, 0);
+            let controlPos = Utils.calcControlPos(startPos, targetPos, offsetPos);
+            Utils.nodeMoving(this.node, startPos, controlPos, targetPos, 0.5, 0, () => {
+                this.riderAnim.crossFade(AnimDefine.RideIdle);
+                this.griffinAnim.crossFade(AnimDefine.Idle);
+                this.rideGriffin();
+            });
+            tween(this.node)
+                .to(0.3, { eulerAngles: wro })
+                .call(() => {
+
+                })
+                .start();
+
+
+
         }, 0.5);
         // const sp = this.rideDiTie.getChildByPath("diTieLayer/info/fill").getComponent(Sprite);
         // this.rideDiTieTween?.stop();
