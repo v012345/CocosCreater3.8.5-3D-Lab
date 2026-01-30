@@ -4,5 +4,13 @@
     "designResolution": {
       "width": 720
     }
+  },
+  "physics": {
+    "collisionGroups": [
+      {
+        "index": 1,
+        "name": "Sticker"
+      }
+    ]
   }
 }
