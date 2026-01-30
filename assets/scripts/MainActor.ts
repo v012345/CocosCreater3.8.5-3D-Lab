@@ -47,25 +47,25 @@ export class MainActor extends Component {
     onTriggerEnter(event: ITriggerEvent) {
         let colliderType = event.otherCollider.node.getComponent(ColliderType);
         if (!colliderType) {
+            console.log(event.otherCollider.node.name + " 没有碰撞类型组件");
             return;
         }
         if (colliderType.colliderType == ColliderTypeEnum.Mount) {
-            if (!this.isMounted) this.onStartRideLion(event.otherCollider.node);
+            if (!this.isMounted) this.toRideGriffin(event.otherCollider.node);
+        } else if (colliderType.colliderType == ColliderTypeEnum.Dismount) {
+            if (this.isMounted) this.toDismountGriffin(event.otherCollider.node);
         }
         // console.log("触发碰撞", colliderType.colliderType);
     }
-    rideGriffin() {
-        this.isMounted = true;
-        let oWorldPos = this.griffinAnimNode.worldPosition.clone()
-        this.griffinAnimNode.setParent(this.node);
-        this.griffinAnimNode.worldPosition = oWorldPos;
+
+    toDismountGriffin(stickerNode?: Node) {
+
     }
-    private onStartRideLion(stickerNode?: Node) {
+
+
+    private toRideGriffin(stickerNode?: Node) {
         let sticker = stickerNode?.getComponent(Sticker);
         sticker.startProgressBar(() => {
-
-
-
             const wro = this.griffinAnimNode.eulerAngles.clone();
             let startPos = this.node.worldPosition.clone();
             let targetPos = this.griffinAnimNode.worldPosition.clone().add(new Vec3(0, 1, 0));
@@ -74,26 +74,13 @@ export class MainActor extends Component {
             Utils.nodeMoving(this.node, startPos, controlPos, targetPos, 0.5, 0, () => {
                 this.riderAnim.crossFade(AnimDefine.RideIdle);
                 this.griffinAnim.crossFade(AnimDefine.Idle);
-                this.rideGriffin();
+                this.isMounted = true;
+                let oWorldPos = this.griffinAnimNode.worldPosition.clone()
+                this.griffinAnimNode.setParent(this.node);
+                this.griffinAnimNode.worldPosition = oWorldPos;
             });
-            tween(this.node)
-                .to(0.3, { eulerAngles: wro })
-                .call(() => {
-
-                })
-                .start();
-
-
-
+            tween(this.node).to(0.3, { eulerAngles: wro }).call(() => { }).start();
         }, 0.5);
-        // const sp = this.rideDiTie.getChildByPath("diTieLayer/info/fill").getComponent(Sprite);
-        // this.rideDiTieTween?.stop();
-        // this.rideDiTieTween = tween(sp)
-        //     .to(0.5, { fillRange: 1 })
-        //     .call(() => {
-        //         this.onRideLion();
-        //     })
-        //     .start();
     }
 
     onTriggerStay(event: ITriggerEvent) {
