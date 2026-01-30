@@ -1,4 +1,4 @@
-import { _decorator, Component, EventTouch, Input, Node, UITransform, Vec3 } from 'cc';
+import { _decorator, Component, EventTouch, Input, Node, Quat, UITransform, Vec3 } from 'cc';
 import { GameGlobal } from '../GameGlobal';
 const { ccclass, property } = _decorator;
 

@@ -1,4 +1,4 @@
-import { _decorator, CharacterController, Component, instantiate, Node, Prefab, Vec3 } from 'cc';
+import { _decorator, CharacterController, Component, instantiate, Node, Prefab, Quat, Vec3 } from 'cc';
 import { Bag } from './tools/Bag';
 import { GameGlobal } from './GameGlobal';
 import { StateDefine } from './EnumDefine';
@@ -43,9 +43,14 @@ export class MainActor extends Component {
 
     }
     private onMoveState(deltaTime: number) {
-
         this.performMovement(deltaTime);
+        this.updateRotation();
 
+    }
+    private updateRotation() {
+        let targetRotation = new Quat();
+        Quat.fromViewUp(targetRotation, this.moveDir, Vec3.UP);
+        this.node.setRotation(targetRotation);
     }
 
     private performMovement(deltaTime: number) {
