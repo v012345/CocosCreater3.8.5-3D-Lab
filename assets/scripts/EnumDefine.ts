@@ -88,3 +88,10 @@ export enum SoundType {
     箭攻击 = 'jianAtk',
 }
 
+export enum StickerType { // 贴纸类型
+    Null = "Null", // 无
+    Mount = "Mount", // 骑
+    Dismount = "Dismount", // 下马
+    CollectFeather = "CollectFeather", // 收集羽毛
+}
+
