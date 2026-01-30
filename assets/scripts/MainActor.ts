@@ -22,17 +22,23 @@ export class MainActor extends Component {
     currState: StateDefine = StateDefine.Null;
     @property(Node)
     animNode: Node;
-    anim: SkeletalAnimation | null = null;
+    @property(Node)
+    griffinAnimNode: Node;
+    riderAnim: SkeletalAnimation | null = null;
+    griffinAnim: SkeletalAnimation | null = null;
     animEvent: ActorAnimation | null = null;  // 动画事件处理
+    isMounted: boolean = false; // 是否骑乘状态
     start() {
         GameGlobal.mainActor = this;
         this.getCoinPile();
         this.characterController = this.node.getComponent(CharacterController);
-        this.anim = this.animNode?.getComponent(SkeletalAnimation);
-        if (this.anim) {
+        this.riderAnim = this.animNode?.getComponent(SkeletalAnimation);
+        if (this.riderAnim) {
             this.animEvent = this.animNode.getComponent(ActorAnimation);
         }
+        this.griffinAnim = this.griffinAnimNode?.getComponent(SkeletalAnimation);
         this.changeActorState(StateDefine.Idle);
+        this.griffinAnim.crossFade(AnimDefine.Idle);
         this.collider.on('onTriggerEnter', this.onTriggerEnter, this);
         this.collider.on('onTriggerStay', this.onTriggerStay, this);
         this.collider.on('onTriggerExit', this.onTriggerExit, this);
@@ -50,7 +56,9 @@ export class MainActor extends Component {
     private onStartRideLion(stickerNode?: Node) {
         let sticker = stickerNode?.getComponent(Sticker);
         sticker.startProgressBar(() => {
-            console.log("骑狮子成功");
+            this.isMounted = true;
+            this.riderAnim.crossFade(AnimDefine.RideIdle);
+            this.griffinAnim.crossFade(AnimDefine.Idle);
         }, 0.5);
         // const sp = this.rideDiTie.getChildByPath("diTieLayer/info/fill").getComponent(Sprite);
         // this.rideDiTieTween?.stop();
@@ -94,12 +102,21 @@ export class MainActor extends Component {
         }
     }
     private onIdleState(deltaTime: number) {
-        this.animPlay(AnimDefine.Idle);
+        // this.riderAnimPlay(AnimDefine.Idle);
+        if (this.isMounted) {
+            this.riderAnimPlay(AnimDefine.MountIdle);
+        } else {
+            this.riderAnimPlay(AnimDefine.Idle);
+        }
     }
     private onMoveState(deltaTime: number) {
         this.performMovement(deltaTime);
         this.updateRotation();
-        this.animPlay(AnimDefine.Move);
+        if (this.isMounted) {
+            this.riderAnimPlay(AnimDefine.MountMove);
+        } else {
+            this.riderAnimPlay(AnimDefine.Move);
+        }
 
     }
     private updateRotation() {
@@ -146,12 +163,12 @@ export class MainActor extends Component {
         this.enterState(newState, oldState);
     }
 
-    animPlay(name: AnimDefine) {
+    riderAnimPlay(name: AnimDefine) {
         if (this.currAnim === name) {
             return;
         }
         this.currAnim = name;
-        this.anim?.crossFade(name);
+        this.riderAnim?.crossFade(name);
     }
 
 

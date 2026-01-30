@@ -13,6 +13,9 @@ export enum StateDefine {
     Dodge = "dodge",
     /** 技能攻击 */
     SkillAttack = "skillAttack",
+    MountIdle = "mountIdle",
+    MountMove = "mountMove",
+
 }
 /** 角色动画 */
 export enum AnimDefine {
@@ -51,6 +54,8 @@ export enum AnimDefine {
     SoldierDie = "soldierDie",
     /** 骑待机 */
     RideIdle = "rideIdle",
+    MountMove = "rideIdle", // MountMove 和 RideIdle 动画一样
+    MountIdle = "rideIdle", // MountIdle 和 RideIdle 动画一样
     /** 骑攻击 */
     RideAttack = "rideAttack",
     /** 骑死亡 */
